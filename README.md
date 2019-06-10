@@ -1,7 +1,6 @@
-<!-- ![logo](./images/xo.png) -->
-<img width=200 align="center" src="./images/xo.png" alt="logo">
+<p align="center"><img width=200 src="./images/xo.png" alt="logo"></p>
 
 
-## XO [in progress]
+## XO *[in progress]*
 
 Minimalistic Tic Tac Toe game written in Dart using the [Flutter Framework](https://flutter.dev)
