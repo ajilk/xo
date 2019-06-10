@@ -14,38 +14,30 @@ void main() {
   );
 }
 
-class UserA extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
+Widget _pill(String msg,
+    {Color color = const Color.fromRGBO(234, 234, 234, 1.0)}) {
+  return Container(
       decoration: BoxDecoration(
-        color: Color.fromRGBO(0, 209, 205, 1.0),
+        color: color,
         borderRadius: new BorderRadius.all(
           const Radius.circular(10.0),
         ),
       ),
       width: 150,
       height: 50,
-      child: Center(child: Text('9')),
-    );
-  }
+      child: Center(child: Text(msg)));
+}
+
+class UserA extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) =>
+      _pill('9', color: Color.fromRGBO(0, 209, 205, 1.0));
 }
 
 class UserB extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(243, 0, 103, 1.0),
-        borderRadius: new BorderRadius.all(
-          const Radius.circular(10.0),
-        ),
-      ),
-      width: 150,
-      height: 50,
-      child: Center(child: Text('7')),
-    );
-  }
+  Widget build(BuildContext context) =>
+      _pill('7', color: Color.fromRGBO(243, 0, 103, 1.0));
 }
 
 class Score extends StatelessWidget {
@@ -70,7 +62,6 @@ class Board extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
       decoration: BoxDecoration(
-        // color: Colors.black12,
         color: Color.fromRGBO(234, 234, 234, 1.0),
         borderRadius: new BorderRadius.all(
           const Radius.circular(10.0),
@@ -90,28 +81,8 @@ class Actions extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              color: Color.fromRGBO(234, 234, 234, 1.0),
-              borderRadius: new BorderRadius.all(
-                const Radius.circular(10.0),
-              ),
-            ),
-            width: 150,
-            height: 50,
-            child: Center(child: Text('new game')),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Color.fromRGBO(234, 234, 234, 1.0),
-              borderRadius: new BorderRadius.all(
-                const Radius.circular(10.0),
-              ),
-            ),
-            width: 150,
-            height: 50,
-            child: Center(child: Text('undo')),
-          ),
+          _pill('new game'),
+          _pill('undo'),
         ],
       ),
     );
