@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'settings.dart';
+
+/* GOAL: Separate logic from UI */ 
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
@@ -56,7 +59,19 @@ class Score extends StatelessWidget {
   }
 }
 
-class Board extends StatelessWidget {
+class Board extends StatefulWidget {
+  @override 
+  BoardState createState() => BoardState();
+}
+
+class BoardState extends State<Board> {
+  List< List<Tile> > _board = [
+    [Tile(), Tile(), Tile()],
+    [Tile(), Tile(), Tile()],
+    [Tile(), Tile(), Tile()]
+  ];
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -68,7 +83,36 @@ class Board extends StatelessWidget {
         ),
       ),
       height: 350.0,
-      width: 400.0,
+      width: 350.0,
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(mainAxisAlignment: MainAxisAlignment.center, children: [ _board[0][0], _board[0][1], _board[0][2] ]),
+            Column(mainAxisAlignment: MainAxisAlignment.center, children: [ _board[1][0], _board[1][1], _board[1][2] ]),
+            Column(mainAxisAlignment: MainAxisAlignment.center, children: [ _board[2][0], _board[2][1], _board[2][2] ]),
+          ]
+        ),
+      ),
+    );
+  }
+}
+
+class Tile extends StatefulWidget {
+  @override
+  TileState createState() => TileState();
+}
+
+class TileState extends State<Tile> {
+  int _value = -1;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black26,
+      height: 110,
+      width: 110,
+      child: Center(child: Text('$_value')),
     );
   }
 }
@@ -78,32 +122,31 @@ class Actions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: <Widget>[
-          _pill('new game'),
-          _pill('undo'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              _pill('new game'),
+              _pill('undo'),
+            ],
+          ),
+          GestureDetector(
+            onVerticalDragUpdate: (DragUpdateDetails details) =>
+                print('goTo [Settings]'),
+            onTap: () => print('goTo [Settings]'),
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              child: Opacity(
+                  opacity: 0.4,
+                  child: Icon(
+                    Icons.arrow_upward,
+                  )),
+              width: 400,
+              height: 60,
+            ),
+          ),
         ],
-      ),
-    );
-  }
-}
-
-class Settings extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onVerticalDragUpdate: (DragUpdateDetails details) =>
-          print('goTo [Settings]'),
-      child: Container(
-        alignment: Alignment.bottomCenter,
-        child: Opacity(
-            opacity: 0.4,
-            child: Icon(
-              Icons.arrow_upward,
-            )),
-        width: 400,
-        height: 60,
       ),
     );
   }
