@@ -46,8 +46,8 @@ class Game {
     }
   }
 
-  /// Resets game and scores 
-  void reset(){
+  /// Resets game and scores
+  void reset() {
     newGame();
     _O.score = 0;
     _X.score = 0;
@@ -57,41 +57,36 @@ class Game {
     // Horizontal Wins
     if (board[0][0] == board[0][1] && board[0][1] == board[0][2]) {
       return board[0][0];
-    }
-    else if (board[1][0] == board[1][1] && board[1][1] == board[1][2]) {
+    } else if (board[1][0] == board[1][1] && board[1][1] == board[1][2]) {
       return board[1][0];
-    }
-    else if (board[2][0] == board[2][1] && board[2][1] == board[2][2]) {
+    } else if (board[2][0] == board[2][1] && board[2][1] == board[2][2]) {
       return board[2][0];
     }
 
-    // Vertical Wins
+    // // Vertical Wins
     else if (board[0][0] == board[1][0] && board[1][0] == board[2][0]) {
       return board[0][0];
-    }
-    else if (board[0][1] == board[1][1] && board[1][1] == board[2][1]) {
+    } else if (board[0][1] == board[1][1] && board[1][1] == board[2][1]) {
       return board[0][1];
-    }
-    else if (board[0][2] == board[1][2] && board[1][2] == board[2][2]) {
+    } else if (board[0][2] == board[1][2] && board[1][2] == board[2][2]) {
       return board[0][2];
     }
 
     // Diagonal Wins
     else if (board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
       return board[0][0];
-    }
-    else if (board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+    } else if (board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
       return board[0][2];
     }
 
-  // No wins yet
-  return Value.N;
+    // No wins yet
+    return Value.N;
   }
 
   bool canMove() {
-    for(int i=0; i<SIZE; i++){
-      for(int j=0; j<SIZE; j++){
-        if(board[i][j] == Value.N) return true;
+    for (int i = 0; i < SIZE; i++) {
+      for (int j = 0; j < SIZE; j++) {
+        if (board[i][j] == Value.N) return true;
       }
     }
     return false;

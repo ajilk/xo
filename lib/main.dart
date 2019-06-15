@@ -3,24 +3,35 @@ import 'package:flutter/services.dart';
 import 'settings.dart';
 import 'game.dart';
 
-/* GOAL: Separate logic from UI */
 /* GOAL: Remove duplicate code | lift state up */
 /* FEATURE: Indicate whose turn it is */
+/* FEATURE: Light up the reason for win */
+/* GOAL: Game background and font */
+
+const String o = 'assets/images/o.png';
+const String x = 'assets/images/x.png';
+const String xo = 'assets/images/xo.png';
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
     (_) {
       runApp(
         new MaterialApp(
-          debugShowCheckedModeBanner: false,
           home: XO(),
+          theme: ThemeData(
+            fontFamily: 'HurmeGeometricSans1',
+            textTheme: TextTheme(
+              body1: TextStyle(fontSize: 25),
+            ),
+          ),
+          debugShowCheckedModeBanner: false,
         ),
       );
     },
   );
 }
 
-Widget _buildControl(String msg,
+Widget _buildControl(BuildContext context, String msg,
     {Color color = const Color.fromRGBO(234, 234, 234, 1.0)}) {
   return Container(
       decoration: BoxDecoration(
@@ -31,7 +42,8 @@ Widget _buildControl(String msg,
       ),
       width: 150,
       height: 50,
-      child: Center(child: Text(msg)));
+      child:
+          Center(child: Text(msg, style: Theme.of(context).textTheme.title)));
 }
 
 class Score extends StatelessWidget {
@@ -44,8 +56,10 @@ class Score extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          _buildControl(x.toString(), color: Color.fromRGBO(0, 209, 205, 1.0)),
-          _buildControl(o.toString(), color: Color.fromRGBO(243, 0, 103, 1.0)),
+          _buildControl(context, x.toString(),
+              color: Color.fromRGBO(0, 209, 205, 1.0)),
+          _buildControl(context, o.toString(),
+              color: Color.fromRGBO(243, 0, 103, 1.0)),
         ],
       ),
     );
@@ -55,10 +69,10 @@ class Score extends StatelessWidget {
 Image _icon(Value value) {
   switch (value) {
     case Value.X:
-      return Image.asset('images/x.png');
+      return Image.asset(x);
       break;
     case Value.O:
-      return Image.asset('images/o.png');
+      return Image.asset(o);
       break;
     case Value.N:
       return null;
@@ -66,7 +80,6 @@ Image _icon(Value value) {
   }
   return null;
 }
-
 
 class Board extends StatefulWidget {
   @override
@@ -88,8 +101,11 @@ class BoardState extends State<Board> {
               game.board[i][j] = game.turn;
               game.turn = (game.turn == Value.X) ? Value.O : Value.X;
             }
-            if(game.over() == Value.N && !game.canMove()) over = true;
-            if(game.over() == Value.X || game.over() == Value.O) over = true;
+            switch (game.over()) {
+              case Value.N: over = game.canMove() ? false : true; break;
+              case Value.X:
+              case Value.O: over = true;
+            }
           }),
       child: Square(value: game.board[i][j]),
     );
@@ -107,10 +123,71 @@ class BoardState extends State<Board> {
   }
 
   Widget _over() {
-    if(game.over() == Value.X) game.X.score++;
-    if(game.over() == Value.O) game.O.score++;
-    return Container(
-      child: _icon(game.over())
+    if (game.over() == Value.X) game.X.score++;
+    if (game.over() == Value.O) game.O.score++;
+    return Ink(
+      child: InkWell(
+        onTap: () {
+          setState(
+            () {
+              game.newGame();
+              over = false;
+            },
+          );
+        },
+        child: _icon(game.over()),
+      ),
+    );
+  }
+
+  Widget _buildNewgame() {
+    return Ink(
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(234, 234, 234, 1.0),
+        borderRadius: new BorderRadius.all(
+          const Radius.circular(10.0),
+        ),
+      ),
+      width: 150,
+      height: 50,
+      child: InkWell(
+        borderRadius: new BorderRadius.all(
+          const Radius.circular(10.0),
+        ),
+        onTap: () => setState(() {
+              game.newGame();
+              over = false;
+            }),
+        onLongPress: () => setState(() {
+              game.reset();
+              over = false;
+            }),
+        child: Center(
+          child: Text('new game', style: Theme.of(context).textTheme.title),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUndo() {
+    return Ink(
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(234, 234, 234, 1.0),
+        borderRadius: new BorderRadius.all(
+          const Radius.circular(10.0),
+        ),
+      ),
+      width: 150,
+      height: 50,
+      child: InkWell(
+        borderRadius: new BorderRadius.all(
+          const Radius.circular(10.0),
+        ),
+        onTap: () => {},
+        child: Center(
+          child: Text('undo', style: Theme.of(context).textTheme.title),
+        ),
+      ),
     );
   }
 
@@ -122,22 +199,23 @@ class BoardState extends State<Board> {
         Container(
           margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
           decoration: BoxDecoration(
-            color: Color.fromRGBO(234, 234, 234, 1.0),
+            // color: Color.fromRGBO(234, 234, 234, 1.0),
             borderRadius: new BorderRadius.all(
               const Radius.circular(10.0),
             ),
           ),
           height: 350.0,
           width: 350.0,
-          // This part is really bad (duplicate code) and soon will be fixed
-          child: over ? _over() : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildRow(0),
-              _buildRow(1),
-              _buildRow(2),
-            ],
-          ),
+          child: over
+              ? _over()
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildRow(0),
+                    _buildRow(1),
+                    _buildRow(2),
+                  ],
+                ),
         ),
         // Actions(),
         // Temporarily here because I do not know
@@ -149,12 +227,8 @@ class BoardState extends State<Board> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  GestureDetector(
-                    onTap: () => setState(() { game.newGame(); over = false; } ),
-                    onLongPress: () => setState( () { game.reset(); }),
-                    child: _buildControl('new game'),
-                  ),
-                  _buildControl('undo'),
+                  _buildNewgame(),
+                  _buildUndo(),
                 ],
               ),
               GestureDetector(
@@ -181,7 +255,6 @@ class BoardState extends State<Board> {
 }
 
 class Square extends StatelessWidget {
-
   final Value value;
   Square({this.value});
   @override
@@ -247,7 +320,7 @@ class XO extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Center(child: Image.asset('images/xo.png', width: 100)),
+              Center(child: Image.asset(xo, width: 100)),
               // Score(), // inside board
               Board(),
               // Actions(), // <- inside board
