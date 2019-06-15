@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'settings.dart';
+import 'game.dart';
 
-/* GOAL: Separate logic from UI */ 
+/* GOAL: Separate logic from UI */
+/* GOAL: Remove duplicate code | lift state up */
+/* FEATURE: Indicate whose turn it is */
 
 void main() {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
@@ -60,97 +63,269 @@ class Score extends StatelessWidget {
 }
 
 class Board extends StatefulWidget {
-  @override 
+  @override
   BoardState createState() => BoardState();
 }
 
 class BoardState extends State<Board> {
-  List< List<Tile> > _board = [
-    [Tile(), Tile(), Tile()],
-    [Tile(), Tile(), Tile()],
-    [Tile(), Tile(), Tile()]
-  ];
+  Game game;
 
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(234, 234, 234, 1.0),
-        borderRadius: new BorderRadius.all(
-          const Radius.circular(10.0),
-        ),
-      ),
-      height: 350.0,
-      width: 350.0,
-      child: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Column(mainAxisAlignment: MainAxisAlignment.center, children: [ _board[0][0], _board[0][1], _board[0][2] ]),
-            Column(mainAxisAlignment: MainAxisAlignment.center, children: [ _board[1][0], _board[1][1], _board[1][2] ]),
-            Column(mainAxisAlignment: MainAxisAlignment.center, children: [ _board[2][0], _board[2][1], _board[2][2] ]),
-          ]
-        ),
-      ),
-    );
+  BoardState() {
+    game = new Game();
   }
-}
-
-class Tile extends StatefulWidget {
-  @override
-  TileState createState() => TileState();
-}
-
-class TileState extends State<Tile> {
-  int _value = -1;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black26,
-      height: 110,
-      width: 110,
-      child: Center(child: Text('$_value')),
-    );
-  }
-}
-
-class Actions extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-      child: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              _pill('new game'),
-              _pill('undo'),
-            ],
-          ),
-          GestureDetector(
-            onVerticalDragUpdate: (DragUpdateDetails details) =>
-                print('goTo [Settings]'),
-            onTap: () => print('goTo [Settings]'),
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              child: Opacity(
-                  opacity: 0.4,
-                  child: Icon(
-                    Icons.arrow_upward,
-                  )),
-              width: 400,
-              height: 60,
+    return Column(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(234, 234, 234, 1.0),
+            borderRadius: new BorderRadius.all(
+              const Radius.circular(10.0),
             ),
           ),
-        ],
-      ),
+          height: 350.0,
+          width: 350.0,
+          // This part is really bad (duplicate code) and soon will be fixed
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () => setState(
+                        () {
+                          if (game.board[0][0] == Value.N) {
+                            game.board[0][0] = game.turn;
+                            game.turn =
+                                (game.turn == Value.X) ? Value.O : Value.X;
+                          }
+                        },
+                      ),
+                  child: Square(value: game.board[0][0]),
+                ),
+                GestureDetector(
+                  onTap: () => setState(
+                        () {
+                          if (game.board[0][1] == Value.N) {
+                            game.board[0][1] = game.turn;
+                            game.turn =
+                                (game.turn == Value.X) ? Value.O : Value.X;
+                          }
+                        },
+                      ),
+                  child: Square(value: game.board[0][1]),
+                ),
+                GestureDetector(
+                  onTap: () => setState(
+                        () {
+                          if (game.board[0][2] == Value.N) {
+                            game.board[0][2] = game.turn;
+                            game.turn =
+                                (game.turn == Value.X) ? Value.O : Value.X;
+                          }
+                        },
+                      ),
+                  child: Square(value: game.board[0][2]),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () => setState(
+                        () {
+                          if (game.board[1][0] == Value.N) {
+                            game.board[1][0] = game.turn;
+                            game.turn =
+                                (game.turn == Value.X) ? Value.O : Value.X;
+                          }
+                        },
+                      ),
+                  child: Square(value: game.board[1][0]),
+                ),
+                GestureDetector(
+                  onTap: () => setState(
+                        () {
+                          if (game.board[1][1] == Value.N) {
+                            game.board[1][1] = game.turn;
+                            game.turn =
+                                (game.turn == Value.X) ? Value.O : Value.X;
+                          }
+                        },
+                      ),
+                  child: Square(value: game.board[1][1]),
+                ),
+                GestureDetector(
+                  onTap: () => setState(
+                        () {
+                          if (game.board[1][2] == Value.N) {
+                            game.board[1][2] = game.turn;
+                            game.turn =
+                                (game.turn == Value.X) ? Value.O : Value.X;
+                          }
+                        },
+                      ),
+                  child: Square(value: game.board[1][2]),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () => setState(
+                        () {
+                          if (game.board[2][0] == Value.N) {
+                            game.board[2][0] = game.turn;
+                            game.turn =
+                                (game.turn == Value.X) ? Value.O : Value.X;
+                          }
+                        },
+                      ),
+                  child: Square(value: game.board[2][0]),
+                ),
+                GestureDetector(
+                  onTap: () => setState(
+                        () {
+                          if (game.board[2][1] == Value.N) {
+                            game.board[2][1] = game.turn;
+                            game.turn =
+                                (game.turn == Value.X) ? Value.O : Value.X;
+                          }
+                        },
+                      ),
+                  child: Square(value: game.board[2][1]),
+                ),
+                GestureDetector(
+                  onTap: () => setState(
+                        () {
+                          if (game.board[2][2] == Value.N) {
+                            game.board[2][2] = game.turn;
+                            game.turn =
+                                (game.turn == Value.X) ? Value.O : Value.X;
+                          }
+                        },
+                      ),
+                  child: Square(value: game.board[2][2]),
+                ),
+              ],
+            ),
+          ]),
+        ),
+        // Actions(),
+        // Temporarily here because I do not know
+        // how to access data of the parent
+        Container(
+          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () => setState(() => game.newGame()),
+                    child: _pill('new game'),
+                  ),
+                  _pill('undo'),
+                ],
+              ),
+              GestureDetector(
+                onVerticalDragUpdate: (DragUpdateDetails details) =>
+                    print('goTo [Settings]'),
+                onTap: () => print('goTo [Settings]'),
+                child: Container(
+                  alignment: Alignment.bottomCenter,
+                  child: Opacity(
+                      opacity: 0.4,
+                      child: Icon(
+                        Icons.arrow_upward,
+                      )),
+                  width: 400,
+                  height: 60,
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 }
+
+class Square extends StatelessWidget {
+  Image _icon(Value value) {
+    switch (value) {
+      case Value.X:
+        return Image.asset('images/x.png');
+        break;
+      case Value.O:
+        return Image.asset('images/o.png');
+        break;
+      case Value.N:
+        return null;
+        break;
+    }
+    return null;
+  }
+
+  final Value value;
+  Square({this.value});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.transparent,
+      height: 110,
+      // height: 50,
+      width: 110,
+      padding: EdgeInsets.all(10.0),
+      child: Center(child: _icon(value)),
+    );
+  }
+}
+
+// class Actions extends StatelessWidget {
+//   final Game game;
+//   Actions({this.game});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+//       child: Column(
+//         children: <Widget>[
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: <Widget>[
+//               GestureDetector(
+//                 onTap: () => print('oops'),
+//                 child: _pill('new game'),
+//               ),
+//               _pill('undo'),
+//             ],
+//           ),
+//           GestureDetector(
+//             onVerticalDragUpdate: (DragUpdateDetails details) =>
+//                 print('goTo [Settings]'),
+//             onTap: () => print('goTo [Settings]'),
+//             child: Container(
+//               alignment: Alignment.bottomCenter,
+//               child: Opacity(
+//                   opacity: 0.4,
+//                   child: Icon(
+//                     Icons.arrow_upward,
+//                   )),
+//               width: 400,
+//               height: 60,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class XO extends StatelessWidget {
   @override
@@ -165,7 +340,7 @@ class XO extends StatelessWidget {
               Center(child: Image.asset('images/xo.png', width: 100)),
               Score(),
               Board(),
-              Actions(),
+              // Actions(), // <- put it inside board
               Settings(),
             ],
           ),
