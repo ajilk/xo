@@ -3,11 +3,6 @@ import 'package:flutter/services.dart';
 import 'settings.dart';
 import 'game.dart';
 
-/* GOAL: Remove duplicate code | lift state up */
-/* FEATURE: Indicate whose turn it is */
-/* FEATURE: Light up the reason for win */
-/* GOAL: Game background and font */
-
 const String o = 'assets/images/o.png';
 const String x = 'assets/images/x.png';
 const String xo = 'assets/images/xo.png';
@@ -268,47 +263,6 @@ class Square extends StatelessWidget {
     );
   }
 }
-
-// class Actions extends StatelessWidget {
-//   final Game game;
-//   Actions({this.game});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-//       child: Column(
-//         children: <Widget>[
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: <Widget>[
-//               GestureDetector(
-//                 onTap: () => print('oops'),
-//                 child: _pill('new game'),
-//               ),
-//               _pill('undo'),
-//             ],
-//           ),
-//           GestureDetector(
-//             onVerticalDragUpdate: (DragUpdateDetails details) =>
-//                 print('goTo [Settings]'),
-//             onTap: () => print('goTo [Settings]'),
-//             child: Container(
-//               alignment: Alignment.bottomCenter,
-//               child: Opacity(
-//                   opacity: 0.4,
-//                   child: Icon(
-//                     Icons.arrow_upward,
-//                   )),
-//               width: 400,
-//               height: 60,
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 class XO extends StatelessWidget {
   @override
