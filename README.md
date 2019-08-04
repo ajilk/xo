@@ -13,6 +13,6 @@ Follow this [link](https://flutter.dev/docs/get-started/install) if you have not
 4. `flutter build apk`
 5. `flutter install` (make sure to have a physical android device connected or an emulator running)
 
-Alternatively, you can open the corresponding app in Android Studio (android) or Xcode (iOS) to build and run it.
+Alternatively, you can open the app in Android Studio (android) or Xcode (iOS) to build and run it.
 
 
